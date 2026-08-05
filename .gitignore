@@ -1,0 +1,12 @@
+node_modules/
+.env
+dist/
+.DS_Store
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+uploads/*
+!uploads/.gitkeep
