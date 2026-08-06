@@ -15,4 +15,10 @@ projects_col.create_index('user')
 prompts_col.create_index('project')
 chats_col.create_index([('project', 1), ('user', 1)])
 chats_col.create_index([('project', 1), ('sessionId', 1)])
+chats_col.create_index(
+    [('project', 1), ('user', 1), ('conversationId', 1)],
+    unique=True,
+    sparse=True,
+)
+chats_col.create_index([('project', 1), ('user', 1), ('updatedAt', -1)])
 files_col.create_index('project')
