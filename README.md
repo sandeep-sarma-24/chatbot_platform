@@ -140,16 +140,6 @@ Both share `services.py` for prompt construction and LLM calls.
 | Single LLM provider | Clean, minimal code | Switching providers requires changing `services.py` |
 | File stored on disk | Simple upload flow | Not suitable for multi-server or serverless deployment |
 
-## Scalability Considerations
-
-**Database** — MongoDB Atlas handles scaling automatically. Indexes exist on all query patterns (`user`, `project`, `email`, compound `project+user` and `project+sessionId`).
-
-**LLM calls** — The bottleneck. Each chat request blocks ~3-5s on the LLM. For higher throughput: switch to an async framework (FastAPI), add response streaming (SSE), or use a faster/self-hosted model.
-
-**File storage** — Currently stored on local disk. For multi-server deployment, move to S3/GCS with pre-signed upload URLs.
-
-**Rate limiting** — Swap `memory://` to `redis://` for multi-worker or multi-server deployments.
-
 ## Future Extension Points
 
 | Feature | Where to add |
@@ -162,37 +152,3 @@ Both share `services.py` for prompt construction and LLM calls.
 | External integrations (Slack, etc.) | Add new blueprint, reuse `services.call_llm()` |
 | Multi-tenant / teams | Add `org` field to projects, extend auth middleware |
 
-## API Endpoints
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/health` | No | Health check |
-| POST | `/api/auth/register` | No | Create account |
-| POST | `/api/auth/login` | No | Login |
-| GET | `/api/auth/me` | JWT | Current user |
-| GET | `/api/projects/` | JWT | List projects |
-| POST | `/api/projects/` | JWT | Create project |
-| GET | `/api/projects/:id` | JWT | Get project |
-| PUT | `/api/projects/:id` | JWT | Update project |
-| DELETE | `/api/projects/:id` | JWT | Delete project |
-| POST | `/api/projects/:id/regenerate-key` | JWT | Regenerate API key |
-| GET | `/api/prompts/:projectId` | JWT | List prompts |
-| POST | `/api/prompts/:projectId` | JWT | Create prompt |
-| PUT | `/api/prompts/:id` | JWT | Update prompt |
-| DELETE | `/api/prompts/:id` | JWT | Delete prompt |
-| GET | `/api/chat/:projectId` | JWT | Get chat history |
-| POST | `/api/chat/:projectId` | JWT | Send message |
-| DELETE | `/api/chat/:projectId` | JWT | Clear chat |
-| GET | `/api/files/:projectId` | JWT | List files |
-| POST | `/api/files/:projectId` | JWT | Upload file |
-| DELETE | `/api/files/delete/:fileId` | JWT | Delete file |
-| POST | `/api/embed/chat/:projectId` | API Key | Public chat |
-| GET | `/embed/:projectId?key=...` | Query param | Embed widget HTML |
-
-## Assumptions
-
-- Single-server deployment (in-memory rate limiting, local file storage)
-- MongoDB Atlas is accessible from the deployment environment
-- OpenRouter API is available and the free-tier model is sufficient
-- Users upload documents small enough for context stuffing (< 30k chars each)
-- The application serves a moderate number of concurrent users (Flask sync model)
