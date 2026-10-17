@@ -4,7 +4,7 @@ flask-limiter
 pymongo
 PyJWT==2.13.0
 bcrypt==4.2.0
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 requests==2.32.3
 werkzeug==3.0.4
 PyPDF2
